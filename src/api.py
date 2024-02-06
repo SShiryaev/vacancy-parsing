@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
+
 import requests
-import json
+
+from src.vacancy import Vacancy
 
 
 class MainAPI(ABC):
@@ -25,15 +27,25 @@ class HeadHunterAPI(MainAPI):
     def get_vacancies(self, keyword: str):
         """
         Производит get запрос на сайт hh.ru.
-        :return: Возвращает список вакансий в формате json.
+        :url: Ссылка на запрашиваемый объект.
+        :param keyword: Ключевое слово по вакансиям.
+        :return: Возвращает объект response.
         """
 
         url = 'https://api.hh.ru/vacancies'
-        response = requests.get(url, headers={'HH-User-Agent': 'pythonVacancyParsing/0.1.0 (shiryaev_fox@mail.ru)'},
+        response = requests.get(url, headers={'HH-User-Agent': 'vacancy-parsing/0.1.0 (shiryaev_fox@mail.ru)'},
                                 params={'text': keyword})
-        print(json.dumps(response.json(), indent=4))
         return response.json()
 
 
 hh = HeadHunterAPI()
-hh.get_vacancies('python')
+vacancies = hh.get_vacancies('python')
+for vacancy in vacancies['items']:
+    print(vacancy)
+    vac = Vacancy(vacancy)
+    print(vac)
+    print(vac.city)
+    print(vac.url)
+    print(vac.requirement)
+    print(vac.salary_from)
+    print(vac.salary_to)

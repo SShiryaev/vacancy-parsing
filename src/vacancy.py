@@ -3,26 +3,22 @@ class Vacancy:
     Класс для работы с вакансиями.
     """
 
-    def __init__(self, name: str, url: str, salary_from: int, salary_to: int, requirement: str, city: str):
+    def __init__(self, data):
         """
-        :param name: название вакансии.
-        :param url: ссылка на вакансию.
-        :param salary_from: зарплата от.
-        :param salary_to: зарплата до.
-        :param requirement: описание вакансии.
-        :param city: место работы.
+        :param data: объект response.
         """
 
-        self.name = name
-        self.url = url
-        self.salary_from = salary_from
-        self.salary_to = salary_to
-        self.requirement = requirement
-        self.city = city
+        self.name = None
+        self.url = None
+        self.salary_from = None
+        self.salary_to = None
+        self.requirement = None
+        self.city = None
+        self.get_params(data)
 
     def __repr__(self) -> str:
         """
-        :return: название вакансии.
+        :return: Название вакансии.
         """
 
         return f'Вакансия: {self.name}'
@@ -30,8 +26,8 @@ class Vacancy:
     def __lt__(self, other) -> bool:
         """
         Позволяет сравнивать зарплату меньше или равно между экземплярами класса Vacancy.
-        :param other: поле с зарплатой другого сравниваемого объекта класса Vacancy.
-        :return: bool значение.
+        :param other: Поле с зарплатой другого сравниваемого объекта класса Vacancy.
+        :return: Bool значение.
         """
 
         return self.salary_from <= other.salary_from
@@ -39,27 +35,46 @@ class Vacancy:
     def __ge__(self, other) -> bool:
         """
         Позволяет сравнивать зарплату больше или равно между экземплярами класса Vacancy.
-        :param other: поле с зарплатой другого сравниваемого объекта класса Vacancy.
-        :return: bool значение.
+        :param other: Поле с зарплатой другого сравниваемого объекта класса Vacancy.
+        :return: Bool значение.
         """
 
         return self.salary_from >= other.salary_from
 
-    def validate_data(self) -> None:
+    def get_params(self, data) -> None:
         """
-        Валидация данных из json файла.
-        :return: None.
+        Получение атрибутов класса Vacancy из объекта response.
         """
 
-        if self.name is None:
+        if data['name']:
+            self.name = data['name']
+        else:
             self.name = ''
-        elif self.url is None:
+
+        if data['alternate_url']:
+            self.url = data['alternate_url']
+        else:
             self.url = ''
-        elif self.salary_from is None or self.salary_from == 'null':
+
+        if data['salary']:
+            if data['salary']['from'] and data['salary']['from'] != 'null':
+                self.salary_from = data['salary']['from']
+            else:
+                self.salary_from = 0
+            if data['salary']['to'] and data['salary']['to'] != 'null':
+                self.salary_to = data['salary']['to']
+            else:
+                self.salary_to = 0
+        else:
             self.salary_from = 0
-        elif self.salary_to is None or self.salary_from == 'null':
             self.salary_to = 0
-        elif self.requirement is None:
+
+        if data['snippet'] and data['snippet']['requirement']:
+            self.requirement = data['snippet']['requirement']
+        else:
             self.requirement = ''
-        elif self.city is None:
+
+        if data['address'] and data['address']['city']:
+            self.city = data['address']['city']
+        else:
             self.city = ''
