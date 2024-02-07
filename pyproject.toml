@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "vacancy-parsing"
+version = "0.1.0"
+description = ""
+authors = ["Sergey Shiryaev <shiryaev_fox@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
