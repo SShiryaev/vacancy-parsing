@@ -18,10 +18,15 @@ class Vacancy:
 
     def __repr__(self) -> str:
         """
-        :return: Название вакансии.
+        :return: Атрибуты класса Vacancy.
         """
 
-        return f'Вакансия: {self.name}'
+        return (f'Вакансия: {self.name},\n'
+                f'Город: {self.city},\n'
+                f'Зарплата от: {self.salary_from},\n'
+                f'Зарплата до: {self.salary_to},\n'
+                f'Ссылка на вакансию: {self.url},\n'
+                f'Описание: {self.requirement}')
 
     def __lt__(self, other) -> bool:
         """
@@ -49,12 +54,12 @@ class Vacancy:
         if data['name']:
             self.name = data['name']
         else:
-            self.name = ''
+            self.name = 'Без названия'
 
         if data['alternate_url']:
             self.url = data['alternate_url']
         else:
-            self.url = ''
+            self.url = 'Без ссылки'
 
         if data['salary']:
             if data['salary']['from'] and data['salary']['from'] != 'null':
@@ -72,9 +77,23 @@ class Vacancy:
         if data['snippet'] and data['snippet']['requirement']:
             self.requirement = data['snippet']['requirement']
         else:
-            self.requirement = ''
+            self.requirement = 'Без описания'
 
         if data['address'] and data['address']['city']:
             self.city = data['address']['city']
         else:
-            self.city = ''
+            self.city = 'Без города'
+
+    @staticmethod
+    def cast_to_object_list(vacancies: dict) -> list:
+        """
+        Статический метод для записи экземпляров класса Vacancy в список.
+        :param vacancies: Объект response.
+        :return: Список вакансий.
+        """
+
+        vacancies_list = []
+        for vacancy in vacancies['items']:
+            vac = Vacancy(vacancy)
+            vacancies_list.append(vac)
+        return vacancies_list
