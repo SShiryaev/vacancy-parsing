@@ -6,7 +6,7 @@ hh = HeadHunterAPI()
 json_saver = JSONSaver('json_vacancies.json')
 
 
-def get_vacancies_by_city(vacancies_list: list, user_input: str) -> list:
+def get_vacancies_by_city(vacancies_list: list, user_input: str) -> list or str:
     """
     Сортировка вакансий по городу.
     :param vacancies_list: Список экземпляров класса Vacancy.
@@ -19,10 +19,9 @@ def get_vacancies_by_city(vacancies_list: list, user_input: str) -> list:
         if vacancy.city == user_input.capitalize().strip():
             vacancies_by_city_list.append(vacancy)
 
-    if not vacancies_by_city_list:
-        print('Вакансий по этому городу не найдено.')
-    else:
+    if vacancies_by_city_list:
         return vacancies_by_city_list
+    return 'Вакансий по этому городу не найдено.'
 
 
 def get_top_vacancies(vacancies_list: list, user_input: int) -> list:
@@ -45,9 +44,9 @@ def get_vacancies_by_salary(vacancies_list: list) -> None:
     """
 
     print('Выберете действие:\n'
-          '1 - Получить топ-N вакансий по зарплате\n'
-          '2 - Получить вакансии от заданной суммы\n'
-          '0 - Выйти'
+          '1 - Получить топ-N вакансий по зарплате.\n'
+          '2 - Получить вакансии от заданной суммы.\n'
+          '0 - Вернуться в предыдущее меню.'
           )
     while True:
         user_input = input()
@@ -63,9 +62,17 @@ def get_vacancies_by_salary(vacancies_list: list) -> None:
                 break
             elif user_input == '2':
                 second_input = int(input('Введите минимальную зарплату: '))
-                min_salary = json_saver.get_vacancies({'salary_input': second_input})
-                for vac in min_salary:
-                    print(vac)
+                filtered_list = json_saver.get_vacancies({'salary_input': second_input})
+                print(filtered_list)
+                for vac in filtered_list:
+                    info_vacancy = (f'Вакансия: {vac['name']},\n'
+                                    f'Город: {vac['city']},\n'
+                                    f'Зарплата от: {vac['salary_from']},\n'
+                                    f'Зарплата до:{vac['salary_to']},\n'
+                                    f'Ссылка на вакансию: {vac['url']},\n'
+                                    f'Описание: {vac['requirement']},\n'
+                                    f'-------------------------------\n')
+                    print(info_vacancy)
                 break
             elif user_input == '0':
                 break

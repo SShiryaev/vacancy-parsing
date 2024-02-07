@@ -26,7 +26,8 @@ class Vacancy:
                 f'Зарплата от: {self.salary_from},\n'
                 f'Зарплата до: {self.salary_to},\n'
                 f'Ссылка на вакансию: {self.url},\n'
-                f'Описание: {self.requirement}')
+                f'Описание: {self.requirement}\n'
+                f'-------------------------------\n')
 
     def __lt__(self, other) -> bool:
         """
